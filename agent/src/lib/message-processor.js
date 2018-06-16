@@ -18,7 +18,7 @@ class MessageProcessor
 
     _processTargetSection(targetId, sectionName, sectionData)
     {
-        console.log('[_processTargetSection] ' + targetId + ' :: ' + sectionName + ' : ' + sectionData);
+        console.log('[_processTargetSection] ' + targetId + ' :: ' + sectionName + ' : ' + JSON.stringify(sectionData, null, 4));
         this._registry.set(targetId, sectionName, sectionData);
     }
 

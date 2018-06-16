@@ -1,19 +1,13 @@
 const _ = require('the-lodash');
-const Boom          = require("boom")
+const Boom = require("boom");
 
 class Registry
 {
-    constructor(server, sections)
+    constructor(server)
     {
-        this._sections = sections;
         this._server = server;
         this._data = {};
         this._subscribers = {};
-        for(var section of this._sections) {
-            this._subscribers[section] = {};
-            this._data[section] = {};
-            this._setupRoute(section);
-        }
     }
 
     set(target, section, value)
@@ -23,110 +17,74 @@ class Registry
             return;
         }
         console.log('[REGISTRY] Set: ' + target + ' Section: ' + section);
-        this._data[section][target] = value;
-        this._notifyToSubscribers(section, target);
+        if (!(target in this._data)) {
+            this._data[target] = {};
+        }
+        this._data[target][section] = value;
+        this._notifyToSubscribers(target, section);
     }
 
     unset(target, section)
     {
-        delete this._data[section][target];
-        this._notifyToSubscribers(section, target);
+        if (target in this._data) {
+            delete this._data[target][section];
+            this._notifyToSubscribers(target, section);
+        }
     }
 
     get(target, section)
     {
-        if (target in this._data[section]) {
-            return this._data[section][target];
+        if (target in this._data) {
+            var val = this._data[target][section];
+            if (val) {
+                return val;
+            }
         }
         return {};
     }
 
-    _notifyToSubscribers(section, target)
+    getAll(target)
     {
-        var subscribers = this._subscribers[section][target];
+        if (target in this._data) {
+            return this._data[target];
+        } else {
+            return {};
+        }
+    }
+
+    _notifyToSubscribers(target, section)
+    {
+        var subscribers = this._subscribers[target];
         if (!subscribers) {
             return;
         }
-        var data = this.get(target, section);
-        console.log('Notifying to subscribers of: ' + target + ' :: ' + section + ' Data: ' + JSON.stringify(data));
+        var data = {};
+        data[section] = this.get(target, section);
+        var dataStr = JSON.stringify(data);
+        console.log('Notifying to subscribers of: ' + target + ', section: ' + section + ' Data: ' + dataStr);
         for(var subscriber of subscribers) {
             console.log('Sending to subscriber... ');
-            subscriber.send(JSON.stringify(data));
+            subscriber.send(dataStr);
         }
     }
 
-    _registerSubscriber(section, target, ws)
+    registerSubscriber(target, ws)
     {
-        console.log('Register subscriber: ' + target + ' to section: ' + section);
-        if (!(target in this._subscribers[section])) {
-            this._subscribers[section][target] = [];
+        console.log('Register subscriber: ' + target);
+        if (!(target in this._subscribers)) {
+            this._subscribers[target] = [];
         }
-        this._subscribers[section][target].push(ws);
+        this._subscribers[target].push(ws);
     }
 
-    _unregisterSubscriber(section, target, ws)
+    unregisterSubscriber(target, ws)
     {
-        console.log('Unregister subscriber: ' + target + ' from section: ' + section);
-        let idx = this._subscribers[section][target].indexOf(ws);
-        this._subscribers[section][target].splice(idx, 1);
-        if (this._subscribers[section][target].length == 0) {
-            delete this._subscribers[section][target];
+        console.log('Unregister subscriber: ' + target);
+        let idx = this._subscribers[target].indexOf(ws);
+        this._subscribers[target].splice(idx, 1);
+        if (this._subscribers[target].length == 0) {
+            delete this._subscribers[target];
         }
-    }
-
-    _getTargetFromUrl(url, section)
-    {
-        var re = new RegExp('\\/(\\S+)\\/' + section ,"g");
-        var match = re.exec(url);
-        if (match) {
-            return match[1];
-        } else {
-            console.log('ERROR: counld not parse url: ' + url + ' for section: ' + section);
-            return null;
-        }
-    }
-
-    _setupRoute(section)
-    {
-        this._server.route({
-            method: "POST", path: "/{target}/" + section,
-            config: {
-                payload: { output: "data", parse: true, allow: "application/json" },
-                plugins: {
-                    websocket: {
-                        initially: true,
-                        connect: ({ ctx, ws, req }) => {
-                            console.log('_setupRoute :: connect. url=' + req.url);
-                            var target = this._getTargetFromUrl(req.url, section);
-                            console.log('_setupRoute :: connect. target=' + target);
-                            if (target) {
-                                this._registerSubscriber(section, target, ws);
-                            }
-                        },
-                        disconnect: ({ ctx, ws, req }) => {
-                            console.log('_setupRoute :: disconnect. url=' + req.url);
-                            var target = this._getTargetFromUrl(req.url, section);
-                            console.log('_setupRoute :: disconnect. target=' + target);
-                            if (target) {
-                                this._unregisterSubscriber(section, target, ws);
-                            }
-                        }
-                    }
-                }
-            },
-            handler: (request, reply) => {
-                var target = request.params.target;
-                var data = this.get(target, section);
-
-                let { initially, ws } = request.websocket();
-                if (initially) {
-                    ws.send(JSON.stringify(data));
-                    return reply().code(204);
-                } else {
-                    return reply(data);
-                }
-            }
-        });
     }
 }
 

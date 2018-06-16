@@ -7,23 +7,115 @@
                 "protocol": "http",
                 "networkProtocol": "tcp",
                 "port": 10020,
-                "address": "10.0.0.134"
+                "address": "10.0.0.111"
             }
         },
+
+        "policies": {
+            "values": {
+                "enable-zipkin": true
+            },
+            "children": {
+                "service": {
+                    "values": {
+
+                    },
+                    "children": {
+                        "app": {
+                            "values": {
+
+                            },
+                            "children": {
+                                "client": {
+                                    "values": {
+                                        "timeout": 1000,
+                                        "retry-count": 3,
+                                        "retry-initial-delay": 100,
+                                        "retry-delay-multiplier": 2,
+                                        "retry-max-delay": 5000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "database": {
+                    "values": {
+                        "timeout": 500,
+                        "retry-count": 1
+                    }
+                }
+            }
+        },
+
         "peers": {
+
             "service": {
                 "app": {
                     "client": {
                         "1": {
-                            "name": "client",
                             "protocol": "http",
                             "networkProtocol": "tcp",
                             "port": 10010,
                             "address": "10.0.0.134"
+                        },
+                        "2": {
+                            "protocol": "http",
+                            "networkProtocol": "tcp",
+                            "port": 10012,
+                            "address": "10.0.0.144"
+                        }
+                    }
+                }
+            },
+
+            "cluster": {
+                "hello": {
+                    "client": {
+                        "1": {
+                            "protocol": "http",
+                            "networkProtocol": "tcp",
+                            "port": 10013,
+                            "address": "10.0.0.140"
+                        }
+                    }
+                }
+            },
+
+            "database": {
+                "drugs": {
+                    "0": {
+                        "name": "localHomePC-pharm-drugs",
+                        "class": "nosql",
+                        "subClass": "dynamodb",
+                        "config": {
+                            "credentials": {
+                                "accessKeyId": "kkkkk",
+                                "secretAccessKey": "zzzzzz"
+                            },
+                            "region": "us-east-1"
+                        }
+                    }
+                }
+            },
+
+            "queue": {
+                "jobs": {
+                    "0": {
+                        "name": "localHomePC-pharm-jobs",
+                        "class": "queue",
+                        "subClass": "kinesis",
+                        "config": {
+                            "credentials": {
+                                "accessKeyId": "kkkkkk",
+                                "secretAccessKey": "sssss"
+                            },
+                            "region": "us-east-1"
                         }
                     }
                 }
             }
+
         }
     }
 }

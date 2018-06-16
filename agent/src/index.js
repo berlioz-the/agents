@@ -1,10 +1,8 @@
 'use strict';
 
-const Boom = require("boom")
-const Hapi = require('hapi');
-const HAPIWebSocket = require("hapi-plugin-websocket")
 
 const Registry = require('./lib/registry');
+const Server = require('./lib/server');
 const MessageProcessor = require('./lib/message-processor');
 
 function requireVariable(varName) {
@@ -18,16 +16,11 @@ function requireVariable(varName) {
 requireVariable('BERLIOZ_INFRA');
 requireVariable('BERLIOZ_REGION');
 requireVariable('BERLIOZ_MESSAGE_QUEUE_BERLIOZ_AGENT');
-
 console.log(JSON.stringify(process.env));
 
-const server = new Hapi.Server();
-server.connection({ port: 55555, host: '0.0.0.0' });
-
-server.register(HAPIWebSocket);
-
-var registry = new Registry(server, ['peers', 'endpoints']);
+var registry = new Registry(server);
 var messageProcessor = new MessageProcessor(registry);
+var server = new Server(registry);
 
 var fetcher = null;
 if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aws') {
@@ -35,16 +28,11 @@ if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aw
     fetcher = new Fetcher(messageProcessor);
 } else if (process.env.BERLIOZ_INFRA == 'local') {
     const Fetcher = require('./lib/fetchers/local');
-    fetcher = new Fetcher(messageProcessor, server);
+    fetcher = new Fetcher(messageProcessor, server.server);
 } if (process.env.BERLIOZ_INFRA == 'mock') {
     fetcher = null;
 }
 
-server.start((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log(`Server running at: ${server.info.uri}`);
-});
+server.run();
 
 module.exports = messageProcessor;
