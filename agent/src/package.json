@@ -1,0 +1,19 @@
+{
+  "name": "agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "2.235.1",
+    "boom": "7.2.0",
+    "hapi": "16.6.3",
+    "hapi-plugin-websocket": "1.2.19",
+    "the-lodash": "^1.0.3",
+    "the-promise": "^1.0.28"
+  }
+}
