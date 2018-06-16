@@ -2,94 +2,25 @@
     "id": "82d1c32d-19bd-4e8b-a53b-7529e386b7c3",
     "metadata": {
         "endpoints": {
-            "client": [{
+            "client": {
                 "name": "client",
-                "port": 9042,
-                "protocol": "tcp",
+                "protocol": "http",
                 "networkProtocol": "tcp",
-                "hostPort": 9042,
-                "domainName": null,
-                "address": "10.0.0.23",
-                "instanceAddress": "10.0.0.23",
-                "publicAddress": "54.197.36.76"
-            }],
-            "inter_cluster": [{
-                    "name": "inter_cluster",
-                    "port": 7000,
-                    "protocol": "tcp",
-                    "networkProtocol": "tcp",
-                    "hostPort": 7000,
-                    "domainName": null,
-                    "address": "10.0.0.23",
-                    "instanceAddress": "10.0.0.23",
-                    "publicAddress": "54.197.36.76"
-                },
-                {
-                    "name": "inter_cluster",
-                    "port": 7001,
-                    "protocol": "tcp",
-                    "networkProtocol": "tcp",
-                    "hostPort": 7001,
-                    "domainName": null,
-                    "address": "10.0.0.23",
-                    "instanceAddress": "10.0.0.23",
-                    "publicAddress": "54.197.36.76"
-                }
-            ]
+                "port": 10020,
+                "address": "10.0.0.134"
+            }
         },
         "peers": {
-            "adjasensy": {
-                "cassandra": {
-                    "inter_cluster": {
-                        "1": [{
-                                "name": "inter_cluster",
-                                "port": 7000,
-                                "protocol": "tcp",
-                                "networkProtocol": "tcp",
-                                "hostPort": 7000,
-                                "domainName": null,
-                                "address": "10.0.0.23",
-                                "instanceAddress": "10.0.0.23",
-                                "publicAddress": "54.197.36.76"
-                            },
-                            {
-                                "name": "inter_cluster",
-                                "port": 7001,
-                                "protocol": "tcp",
-                                "networkProtocol": "tcp",
-                                "hostPort": 7001,
-                                "domainName": null,
-                                "address": "10.0.0.23",
-                                "instanceAddress": "10.0.0.23",
-                                "publicAddress": "54.197.36.76"
-                            }
-                        ]
-                    }
-                },
-                "zoo": {
+            "service": {
+                "app": {
                     "client": {
-                        "1": [{
+                        "1": {
                             "name": "client",
-                            "port": 2181,
-                            "protocol": "tcp",
+                            "protocol": "http",
                             "networkProtocol": "tcp",
-                            "hostPort": 2181,
-                            "domainName": null,
-                            "address": "10.0.0.23",
-                            "instanceAddress": "10.0.0.23",
-                            "publicAddress": "54.197.36.76"
-                        }],
-                        "2": [{
-                            "name": "client",
-                            "port": 2181,
-                            "protocol": "tcp",
-                            "networkProtocol": "tcp",
-                            "hostPort": 2181,
-                            "domainName": null,
-                            "address": "10.0.0.102",
-                            "instanceAddress": "10.0.0.102",
-                            "publicAddress": "54.159.248.31"
-                        }]
+                            "port": 10010,
+                            "address": "10.0.0.134"
+                        }
                     }
                 }
             }

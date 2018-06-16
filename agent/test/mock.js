@@ -6,7 +6,7 @@ process.env.BERLIOZ_INFRA = 'mock'
 const fs = require('fs');
 const _ = require('the-lodash');
 
-var messageProcessor = require('../main/index');
+var messageProcessor = require('../src/index');
 var str = fs.readFileSync('./data/agent-message.json');
 var data = JSON.parse(str);
 
