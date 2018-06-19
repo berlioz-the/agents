@@ -13,7 +13,8 @@
 
         "policies": {
             "values": {
-                "enable-zipkin": true
+                "enable-zipkin": true,
+                "zipkin-endpoint": "http://a.b.c.d.local/"
             },
             "children": {
                 "service": {
