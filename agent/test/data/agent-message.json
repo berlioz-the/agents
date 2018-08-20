@@ -51,68 +51,25 @@
 
         "peers": {
 
-            "service": {
-                "app": {
-                    "client": {
-                        "1": {
-                            "protocol": "http",
-                            "networkProtocol": "tcp",
-                            "port": 10010,
-                            "address": "10.0.0.134"
-                        },
-                        "2": {
-                            "protocol": "http",
-                            "networkProtocol": "tcp",
-                            "port": 10012,
-                            "address": "10.0.0.144"
-                        }
+            "service://hello-main-app": {
+                "client": {
+                    "1": {
+                        "name": "client",
+                        "protocol": "http",
+                        "networkProtocol": "tcp",
+                        "port": 4000,
+                        "address": "172.17.0.3"
                     }
                 }
             },
-
-            "cluster": {
-                "hello": {
-                    "client": {
-                        "1": {
-                            "protocol": "http",
-                            "networkProtocol": "tcp",
-                            "port": 10013,
-                            "address": "10.0.0.140"
-                        }
-                    }
-                }
-            },
-
-            "database": {
-                "drugs": {
-                    "0": {
-                        "name": "localHomePC-pharm-drugs",
-                        "class": "nosql",
-                        "subClass": "dynamodb",
-                        "config": {
-                            "credentials": {
-                                "accessKeyId": "kkkkk",
-                                "secretAccessKey": "zzzzzz"
-                            },
-                            "region": "us-east-1"
-                        }
-                    }
-                }
-            },
-
-            "queue": {
-                "jobs": {
-                    "0": {
-                        "name": "localHomePC-pharm-jobs",
-                        "class": "queue",
-                        "subClass": "kinesis",
-                        "config": {
-                            "credentials": {
-                                "accessKeyId": "kkkkkk",
-                                "secretAccessKey": "sssss"
-                            },
-                            "region": "us-east-1"
-                        }
+            "service://hello-main-berlioz_agent": {
+                "ws": {
+                    "1": {
+                        "name": "ws",
+                        "protocol": "http",
+                        "networkProtocol": "tcp",
+                        "port": 55555,
+                        "address": "172.17.0.2"
                     }
                 }
             }

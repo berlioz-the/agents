@@ -7,7 +7,11 @@ class AwsFetcher
     constructor(messageProcessor)
     {
         this._messageProcessor = messageProcessor;
-        this._queueUrl = process.env.BERLIOZ_MESSAGE_QUEUE_BERLIOZ_AGENT;
+
+        this._queueUrl = process.env.BERLIOZ_QUEUE;
+        if (!this._queueUrl) {
+            this._queueUrl = process.env.BERLIOZ_MESSAGE_QUEUE_BERLIOZ_AGENT;
+        }
 
         var credentials = null;
         if (process.env.BERLIOZ_INFRA == 'aws') {
@@ -48,6 +52,11 @@ class AwsFetcher
     _fetchMessages()
     {
         console.log('[_fetchMessages]');
+        if (!this._queueUrl) {
+            console.log('[_fetchMessages] QUEUE NOT PRESENT');
+            return null;
+        }
+
         var params = {
             QueueUrl: this._queueUrl,
             WaitTimeSeconds: 20
@@ -62,7 +71,12 @@ class AwsFetcher
     {
         console.log('[_process]');
         return this._fetchMessages()
-            .then(messages => Promise.serial(messages, x => this._processMessage(x)))
+            .then(messages => {
+                if (!messages) {
+                    return;
+                }
+                return Promise.serial(messages, x => this._processMessage(x))
+            })
             .then(() => console.log('[_process] done. waiting till next round...'))
             .then(() => this._process());
     }
