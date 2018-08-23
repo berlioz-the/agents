@@ -14,33 +14,26 @@
         "policies": {
             "values": {
                 "enable-zipkin": true,
-                "zipkin-endpoint": "http://a.b.c.d.local/"
+                "zipkin-service-id": "service://hello-infra-zipkin"
             },
             "children": {
-                "service": {
+                "service://hello-main-app": {
                     "values": {
 
                     },
                     "children": {
                         "app": {
                             "values": {
-
-                            },
-                            "children": {
-                                "client": {
-                                    "values": {
-                                        "timeout": 1000,
-                                        "retry-count": 3,
-                                        "retry-initial-delay": 100,
-                                        "retry-delay-multiplier": 2,
-                                        "retry-max-delay": 5000
-                                    }
-                                }
+                                "timeout": 1000,
+                                "retry-count": 3,
+                                "retry-initial-delay": 100,
+                                "retry-delay-multiplier": 2,
+                                "retry-max-delay": 5000
                             }
                         }
                     }
                 },
-                "database": {
+                "database://hello-main-contacts": {
                     "values": {
                         "timeout": 500,
                         "retry-count": 1
@@ -57,8 +50,8 @@
                         "name": "client",
                         "protocol": "http",
                         "networkProtocol": "tcp",
-                        "port": 4000,
-                        "address": "172.17.0.3"
+                        "port": 40001,
+                        "address": "localhost"
                     }
                 }
             },
@@ -72,8 +65,32 @@
                         "address": "172.17.0.2"
                     }
                 }
+            },
+            "service://hello-infra-zipkin": {
+                "client": {
+                    "1": {
+                        "name": "client",
+                        "protocol": "http",
+                        "networkProtocol": "tcp",
+                        "port": 40005,
+                        "address": "127.0.0.1"
+                    }
+                }
+            },
+            "database://hello-main-contacts": {
+                "0": {
+                    "name": "local-dynamo-main-contacts",
+                    "class": "nosql",
+                    "subClass": "dynamodb",
+                    "config": {
+                        "credentials": {
+                            "accessKeyId": "",
+                            "secretAccessKey": ""
+                        },
+                        "region": "us-west-2"
+                    }
+                }
             }
-
         }
     }
 }
