@@ -2,8 +2,8 @@
     "id": "82d1c32d-19bd-4e8b-a53b-7529e386b7c3",
     "metadata": {
         "endpoints": {
-            "client": {
-                "name": "client",
+            "default": {
+                "name": "default",
                 "protocol": "http",
                 "networkProtocol": "tcp",
                 "port": 10020,
@@ -45,9 +45,9 @@
         "peers": {
 
             "service://hello-main-app": {
-                "client": {
+                "default": {
                     "1": {
-                        "name": "client",
+                        "name": "default",
                         "protocol": "http",
                         "networkProtocol": "tcp",
                         "port": 40001,
@@ -67,9 +67,9 @@
                 }
             },
             "service://hello-infra-zipkin": {
-                "client": {
+                "default": {
                     "1": {
-                        "name": "client",
+                        "name": "default",
                         "protocol": "http",
                         "networkProtocol": "tcp",
                         "port": 40005,
