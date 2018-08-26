@@ -67,7 +67,7 @@
                 }
             },
             "service://hello-infra-zipkin": {
-                "default": {
+                "client": {
                     "1": {
                         "name": "default",
                         "protocol": "http",
