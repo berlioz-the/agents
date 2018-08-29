@@ -3,6 +3,9 @@
 
 const Registry = require('./lib/registry');
 const Server = require('./lib/server');
+const TaskRepository = require('./lib/task-repository');
+const StatsProcessor = require('./lib/stats-processor');
+const MonitoringServer = require('./lib/monitoring-server');
 const MessageProcessor = require('./lib/message-processor');
 
 function requireVariable(varName) {
@@ -21,6 +24,9 @@ console.log(JSON.stringify(process.env));
 var registry = new Registry(server);
 var messageProcessor = new MessageProcessor(registry);
 var server = new Server(registry);
+var taskRepository = new TaskRepository();
+var statsProcessor = new StatsProcessor(taskRepository);
+var monitoringServer = new MonitoringServer(statsProcessor, taskRepository);
 
 var fetcher = null;
 if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aws') {
@@ -34,5 +40,6 @@ if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aw
 }
 
 server.run();
+monitoringServer.run();
 
 module.exports = messageProcessor;

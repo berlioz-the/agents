@@ -10,8 +10,17 @@ class Server
         this._registry = registry;
 
         this._server = new Hapi.Server();
-        this._server.connection({ port: 55555, host: '0.0.0.0' });
+        this._server.connection({ port: process.env.BERLIOZ_LISTEN_PORT_WS, host: '0.0.0.0' });
         this._server.register(HAPIWebSocket);
+
+        this._server.route({
+            method: "GET", path: "/{target}",
+            handler: (request, reply) => {
+                var target = request.params.target;
+                var data = registry.getAll(target);
+                return reply(data);
+            }
+        });
 
         this._server.route({
             method: "POST", path: "/{target}",

@@ -11,9 +11,17 @@
   "dependencies": {
     "aws-sdk": "2.235.1",
     "boom": "7.2.0",
+    "docker-allcontainers": "^0.8.0",
+    "dockerode": "^2.5.6",
     "hapi": "16.6.3",
     "hapi-plugin-websocket": "1.2.19",
+    "minimist": "^1.1.1",
+    "never-ending-stream": "^2.0.0",
+    "prom-client": "^11.1.1",
+    "pump": "^3.0.0",
+    "split2": "^2.2.0",
     "the-lodash": "^1.0.3",
-    "the-promise": "^1.0.28"
+    "the-promise": "^1.0.28",
+    "through2": "^2.0.1"
   }
 }
