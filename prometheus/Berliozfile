@@ -1,0 +1,5 @@
+---
+kind: image
+cluster: berlioz
+name: prometheus
+significant: true
