@@ -14,18 +14,12 @@ FROM grafana/grafana
 COPY --from=builder /app/main /bin/berlioz_configurator
 RUN ls -la /bin/berlioz_configurator
 
-ADD berlioz_runner.sh /bin/berlioz_runner.sh
-RUN ls -la /bin/berlioz_runner.sh
-
 ADD ./provisioning /etc/grafana/provisioning
 ADD ./config.ini /etc/grafana/config.ini
-ADD ./dashboards /var/lib/grafana/dashboards
+RUN mkdir -p /var/lib/grafana/dashboards
 
 USER root
 RUN chown -R grafana /etc/grafana/provisioning
 
-# USER grafana
-# ENTRYPOINT [ "/bin/sh"]
-# CMD [ "/bin/berlioz_runner.sh"]
-
+USER grafana
 ENTRYPOINT ["/bin/berlioz_configurator"]

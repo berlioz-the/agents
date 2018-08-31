@@ -105,14 +105,7 @@ type DashboardPanel struct {
 		Show    bool          `json:"show"`
 		Values  []interface{} `json:"values"`
 	} `json:"xaxis,omitempty"`
-	Yaxes []struct {
-		Format  string      `json:"format"`
-		Label   interface{} `json:"label"`
-		LogBase int         `json:"logBase"`
-		Max     interface{} `json:"max"`
-		Min     interface{} `json:"min"`
-		Show    bool        `json:"show"`
-	} `json:"yaxes,omitempty"`
+	Yaxes []*DashboardYAxes `json:"yaxes,omitempty"`
 	Yaxis struct {
 		Align      bool        `json:"align"`
 		AlignLevel interface{} `json:"alignLevel"`
@@ -129,4 +122,14 @@ type DashboardTarget struct {
 	IntervalFactor int    `json:"intervalFactor"`
 	LegendFormat   string `json:"legendFormat"`
 	RefID          string `json:"refId"`
+}
+
+// DashboardYAxes tbd
+type DashboardYAxes struct {
+	Format  string      `json:"format"`
+	Label   interface{} `json:"label"`
+	LogBase int         `json:"logBase"`
+	Max     interface{} `json:"max"`
+	Min     interface{} `json:"min"`
+	Show    bool        `json:"show"`
 }
