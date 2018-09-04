@@ -1,4 +1,4 @@
-# berlioz build
+berlioz build
 # docker login
-# docker tag berlioz-main-agent berliozcloud/agent
-# docker push berliozcloud/agent
+docker tag berlioz-main-agent berliozcloud/agent
+docker push berliozcloud/agent

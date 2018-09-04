@@ -133,7 +133,7 @@ func onConsumesChanged(consumes []berlioz.ConsumesModel) {
 	// fmt.Printf("***** UPDATED MONITOR CONSUMES: %#v\n", consumes)
 	newAgents = make(map[string]bool)
 	for _, consumed := range consumes {
-		if consumed.Kind == "service" && consumed.Name == "berlioz_agent" && consumed.Endpoint == "mon" {
+		if consumed.Meta == nil && consumed.Kind == "service" && consumed.Name == "berlioz_agent" && consumed.Endpoint == "mon" {
 			monitorAgent(consumed)
 		}
 	}
