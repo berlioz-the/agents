@@ -18,7 +18,7 @@ func constructDashboard(consumes []berlioz.ConsumesModel) *Dashboard {
 		LastPanelId:   1,
 	}
 
-	dashboard.Time.From = "now-30m"
+	dashboard.Time.From = "now-15m"
 	dashboard.Time.To = "now"
 
 	dashboard.addDashboardRow("Summary")
