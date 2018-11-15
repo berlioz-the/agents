@@ -39,8 +39,7 @@
 [[projects]]
   name = "github.com/berlioz-the/connector-go"
   packages = ["."]
-  revision = "c87c28c2a08747b7ba98574c32e7e5bfbe19801c"
-  version = "1.1.3"
+  version = "1.1.5"
 
 [solve-meta]
   analyzer-name = "dep"
