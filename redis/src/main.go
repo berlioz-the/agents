@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/berlioz-the/connector-go"
 	"os"
 	"os/exec"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/berlioz-the/connector-go"
 )
 
 const redisConfFile = "/etc/redis.conf"
@@ -163,7 +164,7 @@ func forever() {
 
 func main() {
 
-	myIdentity = os.Getenv("BERLIOZ_IDENTITY")
+	myIdentity = berlioz.Identity()
 	myService = os.Getenv("BERLIOZ_SERVICE")
 	if val, err := strconv.Atoi(os.Getenv("replica_count")); err == nil {
 		replicaCount = val
