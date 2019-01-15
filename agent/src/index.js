@@ -29,13 +29,20 @@ var statsProcessor = new StatsProcessor(taskRepository);
 var monitoringServer = new MonitoringServer(statsProcessor, taskRepository);
 
 var fetcher = null;
-if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aws') {
+if (process.env.BERLIOZ_INFRA == 'aws' || process.env.BERLIOZ_INFRA == 'local-aws')
+{
     const Fetcher = require('./lib/fetchers/aws');
     fetcher = new Fetcher(messageProcessor);
-} else if (process.env.BERLIOZ_INFRA == 'local') {
+}
+else if (process.env.BERLIOZ_INFRA == 'local' || 
+         process.env.BERLIOZ_INFRA == 'gcp' || 
+         process.env.BERLIOZ_INFRA == 'k8s')
+{
     const Fetcher = require('./lib/fetchers/local');
     fetcher = new Fetcher(messageProcessor, server.server);
-} if (process.env.BERLIOZ_INFRA == 'mock') {
+}
+else if (process.env.BERLIOZ_INFRA == 'mock')
+{
     fetcher = null;
 }
 
