@@ -59,8 +59,7 @@
 [[projects]]
   name = "github.com/berlioz-the/connector-go"
   packages = ["."]
-  revision = "9c8b367eb631a9141bb26706d3cec016f3e791ec"
-  version = "1.1.6"
+  version = "1.1.7"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
