@@ -102,9 +102,7 @@ class TaskRepository
                 var containerInfo = {
                     Id: container.Id
                 };
-                // console.log(envList)
-                if ((envList['BERLIOZ_CLUSTER'] == process.env.BERLIOZ_CLUSTER) &&
-                    (envList['BERLIOZ_SECTOR'] == process.env.BERLIOZ_SECTOR))
+                if (envList['BERLIOZ_CLUSTER'])
                 {
                     containerInfo.ignore = false;
                     containerInfo.Image = container.Image;
