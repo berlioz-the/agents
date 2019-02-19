@@ -21,9 +21,7 @@ type serviceInfo struct {
 
 var prometheusPid int = 0
 
-var monitoredAgents = make(map[string]serviceInfo)
-var newAgents = make(map[string]bool)
-var trackedPeers = make(map[string]map[string]interface{})
+var trackedPeers = make(map[string]interface{})
 
 func forever() {
 	for {
@@ -46,15 +44,12 @@ func constructConfig() Config {
 	scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &scrapeStaticConfig)
 	config.ScrapeConfigs = append(config.ScrapeConfigs, &scrapeConfig)
 
-	for _, peerMap := range trackedPeers {
-		for _, rawPeer := range peerMap {
-			fmt.Printf("***** [constructConfig] PEER: %#v\n", rawPeer)
-			peer := rawPeer.(map[string]interface{})
-			target := fmt.Sprintf("%s:%d", peer["address"], int(peer["port"].(float64)))
-			fmt.Printf("***** [constructConfig] Target: %#v\n", target)
-
-			scrapeStaticConfig.Targets = append(scrapeStaticConfig.Targets, target)
-		}
+	for _, rawPeer := range trackedPeers {
+		fmt.Printf("***** [constructConfig] PEER: %#v\n", rawPeer)
+		peer := rawPeer.(map[string]interface{})
+		target := fmt.Sprintf("%s:%d", peer["address"], int(peer["port"].(float64)))
+		fmt.Printf("***** [constructConfig] Target: %#v\n", target)
+		scrapeStaticConfig.Targets = append(scrapeStaticConfig.Targets, target)
 	}
 
 	return config
@@ -90,54 +85,16 @@ func processPeers() {
 	notifyPrometheus()
 }
 
-func monitorAgent(consumed berlioz.ConsumesModel) {
-	fmt.Printf("***** AGENT TO MONITOR: %s\n", consumed.ID)
-	id := consumed.ID + "-" + consumed.Endpoint
-	newAgents[id] = true
+func monitorBerliozAgents() {
+	fmt.Printf("***** monitorBerliozAgents\n")
 
-	if _, ok := monitoredAgents[id]; ok {
-		return
-	}
-
-	info := serviceInfo{id: id, serviceID: consumed.ID, endpoint: consumed.Endpoint}
-	info.handler = func(peers map[string]interface{}) {
-		fmt.Printf("***** PEERS CHANGED FOR: %s\n", id)
-		trackedPeers[id] = peers
+	handler := func(peers map[string]interface{}) {
+		fmt.Printf("***** PEERS CHANGED...\n")
+		trackedPeers = peers
 		processPeers()
 	}
 
-	monitoredAgents[id] = info
-
-	info.monitor = berlioz.Sector(consumed.Sector).Service(consumed.Name).Endpoint(consumed.Endpoint).MonitorAll(info.handler)
-}
-
-func stopMonitoring(id string, serviceInfo serviceInfo) {
-	fmt.Printf("***** AGENT TO STOP MONITORING: %s\n", id)
-	serviceInfo.monitor.Stop()
-	delete(trackedPeers, id)
-	delete(monitoredAgents, id)
-	processPeers()
-}
-
-func applyAgentChanges() {
-	// fmt.Printf("***** applyAgentChanges: %#v\n", monitoredAgents)
-
-	for id, serviceInfo := range monitoredAgents {
-		if _, ok := newAgents[id]; !ok {
-			stopMonitoring(id, serviceInfo)
-		}
-	}
-}
-
-func onConsumesChanged(consumes []berlioz.ConsumesModel) {
-	// fmt.Printf("***** UPDATED MONITOR CONSUMES: %#v\n", consumes)
-	newAgents = make(map[string]bool)
-	for _, consumed := range consumes {
-		if consumed.Meta == nil && consumed.Kind == "service" && consumed.Name == "berlioz_agent" && consumed.Endpoint == "mon" {
-			monitorAgent(consumed)
-		}
-	}
-	applyAgentChanges()
+	berlioz.Cluster("berlioz").Endpoint("agent_mon").MonitorAll(handler)
 }
 
 func main() {
@@ -153,7 +110,7 @@ func main() {
 
 	fmt.Printf("prometheusPid: %s\n", prometheusPid)
 
-	berlioz.Consumes().MonitorAll(onConsumesChanged)
+	monitorBerliozAgents()
 
 	forever()
 }
