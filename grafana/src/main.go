@@ -15,12 +15,16 @@ func forever() {
 }
 
 func onPrometheusPeersChanged(peers map[string]interface{}) {
+	fmt.Printf("**** onPrometheusPeersChanged\n")
+
 	config := constructDataSourceConfig(peers)
 	writeYamlConfig(config, "/etc/grafana/provisioning/datasources/berlioz.yml")
 	restartGrafana()
 }
 
 func onConsumesChanged(consumes []berlioz.ConsumesModel) {
+	fmt.Printf("**** onConsumesChanged\n")
+
 	dashboard := constructDashboard(consumes)
 	writeJsonConfig(dashboard, "/var/lib/grafana/dashboards/berlioz.json")
 }
@@ -28,7 +32,7 @@ func onConsumesChanged(consumes []berlioz.ConsumesModel) {
 func main() {
 	fmt.Printf("**** LAUNCHER STARTED\n")
 
-	berlioz.Service("prometheus").Endpoint("server").MonitorAll(onPrometheusPeersChanged)
+	berlioz.Service("prmts").Endpoint("server").MonitorAll(onPrometheusPeersChanged)
 	berlioz.Consumes().MonitorAll(onConsumesChanged)
 
 	startGrafana()
