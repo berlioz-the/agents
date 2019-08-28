@@ -94,7 +94,7 @@ func monitorBerliozAgents() {
 		processPeers()
 	}
 
-	berlioz.Cluster("berlioz").Endpoint("agent_mon").MonitorAll(handler)
+	berlioz.Cluster("berlioz").Endpoint("agtmn").MonitorAll(handler)
 }
 
 func main() {
